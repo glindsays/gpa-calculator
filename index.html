@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kalkulator Target IPK Mahasiswa</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #ffffff;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #059669;
+    --warn: #d97706;
+    --danger: #dc2626;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, #1e293b 0%, #0f172a 60%, #1e1b4b 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  }
+
+  .field { margin-bottom: 18px; }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #334155;
+  }
+
+  .hint {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    color: var(--text);
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"]:focus {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+
+  input.invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  }
+
+  .err {
+    display: none;
+    font-size: 0.75rem;
+    color: var(--danger);
+    margin-top: 5px;
+  }
+
+  .err.show { display: block; }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .15s, transform .05s;
+  }
+
+  button:hover { background: var(--primary-dark); }
+  button:active { transform: translateY(1px); }
+
+  button.ghost {
+    margin-top: 10px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  button.ghost:hover { background: #f1f5f9; color: var(--text); }
+
+  #result { margin-top: 20px; }
+
+  .panel {
+    border-radius: 14px;
+    padding: 20px 18px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+  }
+
+  .panel.ok { background: #ecfdf5; border-color: #a7f3d0; }
+  .panel.warn { background: #fffbeb; border-color: #fde68a; }
+  .panel.bad { background: #fef2f2; border-color: #fecaca; }
+
+  .panel h2 {
+    margin: 0 0 4px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+  }
+
+  .value {
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--success);
+  }
+
+  .panel.warn .value { color: var(--warn); }
+  .panel.bad .value { color: var(--danger); }
+
+  .msg {
+    margin: 10px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: #334155;
+  }
+
+  .msg b { color: #0f172a; }
+
+  ul.msg { padding-left: 18px; }
+
+  .detail {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+    word-break: break-word;
+  }
+
+  .detail code {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: #475569;
+    white-space: normal;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 20px;
+  }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kalkulator Target IPK Mahasiswa</h1>
+    <p>Tentukan IPK minimal yang harus dicapai semester ini</p>
+  </header>
+
+  <main class="card">
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="ipk">IPK Saat Ini
+          <span class="hint">Rata-rata IPK dari semester sebelumnya (0.00 &ndash; 4.00)</span>
+        </label>
+        <input type="number" id="ipk" step="0.01" min="0" max="4" placeholder="Contoh: 3.20" inputmode="decimal" />
+        <p class="err" id="err-ipk"></p>
+      </div>
+
+      <div class="field">
+        <label for="sksTotal">Total SKS yang Sudah Diambil
+          <span class="hint">Akumulasi SKS sampai semester sebelumnya</span>
+        </label>
+        <input type="number" id="sksTotal" step="1" min="0" placeholder="Contoh: 96" inputmode="numeric" />
+        <p class="err" id="err-sksTotal"></p>
+      </div>
+
+      <div class="field">
+        <label for="sksSemester">SKS yang Diambil Semester Ini
+          <span class="hint">Minimal 1 SKS agar perhitungan valid</span>
+        </label>
+        <input type="number" id="sksSemester" step="1" min="1" placeholder="Contoh: 24" inputmode="numeric" />
+        <p class="err" id="err-sksSemester"></p>
+      </div>
+
+      <div class="field">
+        <label for="target">Target IPK Kelulusan / Semester Depan
+          <span class="hint">IPK akhir yang ingin dicapai (0.00 &ndash; 4.00)</span>
+        </label>
+        <input type="number" id="target" step="0.01" min="0" max="4" placeholder="Contoh: 3.50" inputmode="decimal" />
+        <p class="err" id="err-target"></p>
+      </div>
+
+      <button type="submit">Hitung Target</button>
+      <button type="button" class="ghost" id="reset">Reset</button>
+    </form>
+
+    <section id="result" aria-live="polite" hidden></section>
+  </main>
+
+  <footer>Rumus: ((Target &times; (SKS Total + SKS Semester Ini)) &minus; (IPK Sekarang &times; SKS Total)) &divide; SKS Semester Ini</footer>
+</div>
+
+<script>
+  const form = document.getElementById('form');
+  const result = document.getElementById('result');
+  const resetBtn = document.getElementById('reset');
+
+  const fields = {
+    ipk: document.getElementById('ipk'),
+    sksTotal: document.getElementById('sksTotal'),
+    sksSemester: document.getElementById('sksSemester'),
+    target: document.getElementById('target')
+  };
+
+  const MAX_IPK = 4.0;
+
+  const rules = {
+    ipk: v => v === '' ? 'IPK saat ini wajib diisi.' : v < 0 || v > MAX_IPK ? 'IPK harus antara 0.00 dan 4.00.' : '',
+    sksTotal: v => v === '' ? 'Total SKS wajib diisi.' : v < 0 || !Number.isInteger(v) ? 'Total SKS harus bilangan bulat &ge; 0.' : '',
+    sksSemester: v => v === '' ? 'SKS semester ini wajib diisi.' : v < 1 || !Number.isInteger(v) ? 'SKS semester ini harus bilangan bulat &ge; 1.' : '',
+    target: v => v === '' ? 'Target IPK wajib diisi.' : v < 0 || v > MAX_IPK ? 'Target IPK harus antara 0.00 dan 4.00.' : ''
+  };
+
+  function readValue(key) {
+    const raw = fields[key].value.trim();
+    return raw === '' ? NaN : Number(raw);
+  }
+
+  function validate() {
+    const data = {};
+    let firstInvalid = null;
+    let valid = true;
+
+    for (const key of Object.keys(fields)) {
+      const v = readValue(key);
+      const err = rules[key](fields[key].value.trim());
+      const errEl = document.getElementById('err-' + key);
+      fields[key].classList.toggle('invalid', err !== '');
+      errEl.textContent = err;
+      errEl.classList.toggle('show', err !== '');
+      if (err) {
+        valid = false;
+        if (!firstInvalid) firstInvalid = key;
+      }
+      data[key] = v;
+    }
+
+    return { valid, data, firstInvalid };
+  }
+
+  function fmt(n) {
+    return n.toFixed(2);
+  }
+
+  function render(panelClass, value, title, messages, detail) {
+    result.hidden = false;
+    result.innerHTML =
+      '<div class="panel ' + panelClass + '">' +
+        '<h2>' + title + '</h2>' +
+        '<div class="value">' + value + '</div>' +
+        '<ul class="msg">' + messages.map(m => '<li>' + m + '</li>').join('') + '</ul>' +
+        '<div class="detail">' + detail + '</div>' +
+      '</div>';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const { valid, data, firstInvalid } = validate();
+
+    if (!valid) {
+      result.hidden = true;
+      fields[firstInvalid].focus();
+      return;
+    }
+
+    const { ipk, sksTotal, sksSemester, target } = data;
+    const ipkSemesterIni = ((target * (sksTotal + sksSemester)) - (ipk * sksTotal)) / sksSemester;
+    const ipkAkhir = (ipk * sksTotal + ipkSemesterIni * sksSemester) / (sksTotal + sksSemester);
+
+    const detail = 'Perhitungan: ((' + fmt(target) + ' &times; ' + (sksTotal + sksSemester) + ') &minus; (' +
+      fmt(ipk) + ' &times; ' + sksTotal + ')) &divide; ' + sksSemester +
+      ' <code>= ' + fmt(ipkSemesterIni) + '</code>';
+
+    if (ipkSemesterIni > MAX_IPK) {
+      render('bad', fmt(ipkSemesterIni) + ' / 4.00', 'Target Tidak Realistis', [
+        'IPK semester ini <b>melebihi 4.00</b>, sehingga mustahil dicapai.',
+        'Batas maksimum IPK adalah <b>4.00</b>. Turunkan target IPK atau tambah bobot SKS semester ini.'
+      ], detail);
+      return;
+    }
+
+    if (ipkSemesterIni < 0) {
+      render('warn', fmt(ipkSemesterIni) + ' / 4.00', 'Target Sudah Terlewati', [
+        'IPK saat ini (<b>' + fmt(ipk) + '</b>) sudah lebih tinggi dari target (<b>' + fmt(target) + '</b>).',
+        'Nilai negatif berarti Anda <b>tidak perlu strive</b> &mdash; target sudah tercapai.'
+      ], detail);
+      return;
+    }
+
+    if (ipkSemesterIni >= 3.5) {
+      render('warn', fmt(ipkSemesterIni) + ' / 4.00', 'Target Tantang', [
+        'Butuh IPK semester ini <b>' + fmt(ipkSemesterIni) + '</b> &mdash; sangat menantang, siapkan strategi belajar baik.'
+      ], detail);
+      return;
+    }
+
+    render('ok', fmt(ipkSemesterIni) + ' / 4.00', 'Target Semester Ini', [
+      'Rata-rata <b>' + fmt(ipkSemesterIni) + '</b> per mata kuliah pada semester ini sudah cukup.',
+      'IPK kumulatif akhirnya menjadi <b>' + fmt(ipkAkhir) + '</b> dari total ' + (sksTotal + sksSemester) + ' SKS.'
+    ], detail);
+  });
+
+  resetBtn.addEventListener('click', () => {
+    form.reset();
+    result.hidden = true;
+    for (const key of Object.keys(fields)) {
+      fields[key].classList.remove('invalid');
+      const errEl = document.getElementById('err-' + key);
+      errEl.textContent = '';
+      errEl.classList.remove('show');
+    }
+    fields.ipk.focus();
+  });
+
+  form.addEventListener('input', e => {
+    if (!e.target.matches('input[type="number"]')) return;
+    e.target.classList.remove('invalid');
+    const errEl = document.getElementById('err-' + e.target.id);
+    errEl.textContent = '';
+    errEl.classList.remove('show');
+  });
+</script>
+</body>
+</html>
