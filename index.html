@@ -280,8 +280,16 @@
 
   const rules = {
     ipk: v => v === '' ? 'IPK saat ini wajib diisi.' : v < 0 || v > MAX_IPK ? 'IPK harus antara 0.00 dan 4.00.' : '',
-    sksTotal: v => v === '' ? 'Total SKS wajib diisi.' : v < 0 || !Number.isInteger(v) ? 'Total SKS harus bilangan bulat &ge; 0.' : '',
-    sksSemester: v => v === '' ? 'SKS semester ini wajib diisi.' : v < 1 || !Number.isInteger(v) ? 'SKS semester ini harus bilangan bulat &ge; 1.' : '',
+    sksTotal: v => {
+      const raw = v.replace(',', '.');
+      const n = Number(raw);
+      return raw === '' ? 'Total SKS wajib diisi.' : isNaN(n) || n < 0 || !Number.isInteger(n) ? 'Total SKS harus bilangan bulat ≥ 0.' : '';
+    },
+    sksSemester: v => {
+      const raw = v.replace(',', '.');
+      const n = Number(raw);
+      return raw === '' ? 'SKS semester ini wajib diisi.' : isNaN(n) || n < 1 || !Number.isInteger(n) ? 'SKS semester ini harus bilangan bulat ≥ 1.' : '';
+    },
     target: v => v === '' ? 'Target IPK wajib diisi.' : v < 0 || v > MAX_IPK ? 'Target IPK harus antara 0.00 dan 4.00.' : ''
   };
 
